@@ -7,7 +7,7 @@ import modelo.camino;
 public class MAPA {
     private char[][] matriz;
     private char[][] matrizOriginal;
-    private boolean hayEntrada, DEBUG;
+    private boolean hayEntrada, haySalida, DEBUG;
     private int Centrada, Fentrada, menorMinas, menorMovimientos;
     private ArrayList<ArrayList> todosLosCaminos = new ArrayList<>();
     private ArrayList<camino> allCaminos;
@@ -18,7 +18,7 @@ public class MAPA {
         this.matriz=matriz;
         this.matrizOriginal=matriz;
         this.hayEntrada=false;
-        this.posicionPartida('E');
+        this.revisionInicialLaberinto('E', 'D');
         this.todosLosCaminos.clear();
         this.menorMinas=99999;
         this.menorMovimientos=99999;
@@ -45,7 +45,7 @@ public class MAPA {
     //este metodo recibe el arraylist que tiene las rutas a la meta que que envia RESOLVER
     //y lo guarda dentro de un arraylist
     public void añadirCamino(ArrayList<String> camino) {
-        System.out.println("camino encontrado"+camino);
+        //System.out.println("camino encontrado"+camino);
         todosLosCaminos.add(camino);
        
     }
@@ -202,7 +202,7 @@ public class MAPA {
        boolean s;
        long tiempoInicio, tiempoFin, tiempoEjecucion, tiempoEjecucionSeg=0;
         ArrayList<String> caminoX = new ArrayList<>();
-        if(this.hayEntrada){
+        if((this.hayEntrada)&&(this.haySalida)){
             if(this.DEBUG){ System.out.println("Mapa Valido, intenta resolver");}
             
             tiempoInicio = System.nanoTime();
@@ -215,10 +215,10 @@ public class MAPA {
                 if(this.DEBUG){ System.out.println("Solucion Encontrada...");}
                 msjSalida=this.mejorCamino().toString().replace(",", "\n"); 
             }
-            else{msjSalida="No hay solucion...";}
+            else{msjSalida="No hay solucion...\n";}
             msjSalida=msjSalida.concat("\nTiempo Ejecucion: "+Long.toString(tiempoEjecucionSeg)+" Seg\n");
 
-        }else{msjSalida="Mapa Invalido";}
+        }else{msjSalida="Mapa Invalido\n";}
        
        msjSalida=msjSalida.concat("Numero caminos Encontrados: "+this.numCaminosEncontrados());
        return(msjSalida);
@@ -390,23 +390,42 @@ public class MAPA {
   
     
  
-  private void posicionPartida(char partida){
-      if(this.DEBUG){System.out.println("___________posicionPartida______________");}
+  private void revisionInicialLaberinto(char partida, char salida){
+      System.out.println("___________posicionPartida______________");
      
       this.hayEntrada=false;
+      this.haySalida=false;
       
        for(int f=0;f<matriz.length;f++) {
+           
             for(int c=0;c<matriz[f].length;c++) {
-                if(matriz[f][c]==partida){
-                    if(this.DEBUG){System.out.println("partida encontrada, posicion F: "+f+" C: "+c);}
-                    this.Centrada=c;
-                    this.Fentrada=f;
-                    this.hayEntrada=true;
-                    break;
+                
+                if(!this.hayEntrada){
+                    if(matriz[f][c]==partida){
+                        System.out.println("Partida encontrada, posicion F: "+f+" C: "+c);
+                        this.Centrada=c;
+                        this.Fentrada=f;
+                        this.hayEntrada=true;
+                        //break;
+                    }
                 }
+                
+               if(!this.haySalida){
+                    if(matriz[f][c]==salida){
+                       System.out.println("Salida encontrada, posicion F: "+f+" C: "+c);
+                        this.haySalida=true;
+                        //break;
+                    }
+                }
+               
+               
+               
             }
+ 
         }
-      if(this.DEBUG){ System.out.println("______________________________________________");}
+       if(this.hayEntrada&&this.haySalida){System.out.println("Mapa Valido");}
+       else{System.out.println("Mapa Invalido");}
+     System.out.println("______________________________________________");
   }
   
   

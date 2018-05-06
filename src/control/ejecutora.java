@@ -18,7 +18,7 @@ public class ejecutora {
         arrayMapa=ARCHIVO.leerArchivo("D:/mapa1.txt", i, j);
         
         MAPA mapaX = new MAPA(arrayMapa);
-        mapaX.setDebbug(true);
+        mapaX.setDebbug(false);
         
         String salida=mapaX.buscarDocumento();
         
